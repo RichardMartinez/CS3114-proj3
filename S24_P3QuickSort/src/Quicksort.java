@@ -1,5 +1,5 @@
 /**
- * {Project Description Here}
+ * TODO: {Project Description Here}
  */
 
 /**
@@ -37,7 +37,21 @@ public class Quicksort {
      */
     public static void main(String[] args) {
         // This is the main file for the program.
-        System.out.println("This is working QuickSort!");
-        System.out.println("TODO: Implement project here");
+        // System.out.println("This is working QuickSort!");
+        // System.out.println("Implement project here");
+        
+        if (args.length != 3) {
+            System.out.println("Invalid number of args");
+            return;
+        }
+        
+        // Parse Input Args
+        String dataFileName = args[0];
+        int numBuffers = Integer.parseInt(args[1]);
+        String statFileName = args[2];
+        
+        // TODO: Run QuickSort on dataFileName
     }
+    
+    
 }
