@@ -54,6 +54,14 @@ public class BufferPool {
         // TEMP
         buffers[0] = new Buffer(0);
         readFromFile(buffers[0]);
+        
+        // Make a change V -> A
+        byte[] record = {32, 65, 32, 32};
+        buffers[0].set(record, 0);
+        buffers[0].makeDirty();  // TODO: Auto call this inside set??
+        
+        // Write back to file
+        writeToFile(buffers[0]);
     }
     
     /**
@@ -68,5 +76,19 @@ public class BufferPool {
         
         // Read into the buffer data
         file.read(buf.getData());
+    }
+    
+    /**
+     * Write the contents of the buffer to the file
+     * @param buf
+     *      The buffer to write
+     * @throws IOException 
+     */
+    public void writeToFile(Buffer buf) throws IOException {
+        // Point RAF to correct starting location
+        file.seek(buf.getID() * BLOCK_SIZE_BYTES);
+        
+        // Write the file
+        file.write(buf.getData());
     }
 }  
