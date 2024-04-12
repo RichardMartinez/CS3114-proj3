@@ -36,8 +36,9 @@ public class BufferPool {
      *      The RAF to read and write
      * @param numBuffers
      *      The number of buffers for this pool
+     * @throws IOException 
      */
-    public BufferPool(RandomAccessFile file, int numBuffers) {
+    public BufferPool(RandomAccessFile file, int numBuffers) throws IOException {
         this.numBuffers = numBuffers;
         this.file = file;
         this.activeBuffers = 0;
@@ -49,6 +50,10 @@ public class BufferPool {
         for (int i = 0; i < numBuffers; i++) {
             buffers[i] = new Buffer();
         }
+        
+        // TEMP
+        buffers[0] = new Buffer(0);
+        readFromFile(buffers[0]);
     }
     
     /**

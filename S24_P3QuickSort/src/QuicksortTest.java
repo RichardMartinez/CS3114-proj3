@@ -40,6 +40,10 @@ public class QuicksortTest extends TestCase {
                                       // to 8261
 
         raf.close();
+        
+        // Generate One Block txt
+//        fg = new FileGenerator("oneBlock.txt", 1);
+//        fg.generateFile(FileType.ASCII);
     }
 
 

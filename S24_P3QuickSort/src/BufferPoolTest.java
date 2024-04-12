@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import student.TestCase;
 
 /**
@@ -13,10 +15,12 @@ public class BufferPoolTest extends TestCase {
     
     /**
      * Set up the test object
+     * @throws IOException 
      */
-    public void setUp() {
+    public void setUp() throws IOException {
         // TODO: Change this once RAF is working
-        pool = new BufferPool(null, 1);
+        RandomAccessFile file = new RandomAccessFile("oneBlock.txt", "rw");
+        pool = new BufferPool(file, 1);
     }
     
     /**
