@@ -27,13 +27,13 @@ public class Buffer {
      *      The id to use
      */
     public Buffer(int id) {
-        this.setData(new byte[BLOCK_SIZE_BYTES]);
+        this.data = new byte[BLOCK_SIZE_BYTES];
         this.dirty = false;
         this.id = id;
         
         // Fill data with zeros
         for (int i = 0; i < BLOCK_SIZE_BYTES; i++) {
-            getData()[i] = 0;
+            data[i] = 0;
         }
     }
     
@@ -57,10 +57,10 @@ public class Buffer {
      */
     public void set(byte[] record, int position) {
         // Don't do any error checking here to save time
-        getData()[position] = record[0];
-        getData()[position+1] = record[1];
-        getData()[position+2] = record[2];
-        getData()[position+3] = record[3];
+        data[position] = record[0];
+        data[position+1] = record[1];
+        data[position+2] = record[2];
+        data[position+3] = record[3];
     }
     
     /**
@@ -73,10 +73,10 @@ public class Buffer {
      */
     public void get(byte[] space, int position) {
         // Don't do any error checking here to save time
-        space[0] = getData()[position];
-        space[1] = getData()[position+1];
-        space[2] = getData()[position+2];
-        space[3] = getData()[position+3];
+        space[0] = data[position];
+        space[1] = data[position+1];
+        space[2] = data[position+2];
+        space[3] = data[position+3];
     }
     
     /**

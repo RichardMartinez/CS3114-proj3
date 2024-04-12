@@ -18,7 +18,6 @@ public class BufferPoolTest extends TestCase {
      * @throws IOException 
      */
     public void setUp() throws IOException {
-        // TODO: Change this once RAF is working
         RandomAccessFile file = new RandomAccessFile("oneBlock.txt", "rw");
         pool = new BufferPool(file, 1);
     }

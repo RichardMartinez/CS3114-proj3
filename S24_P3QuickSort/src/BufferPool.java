@@ -21,9 +21,6 @@ public class BufferPool {
     // Number of buffers available
     private int numBuffers;
     
-    // Number of active buffers
-    private int activeBuffers;
-    
     // RandomAccessFile to read and write
     private RandomAccessFile file;
     
@@ -38,10 +35,9 @@ public class BufferPool {
      *      The number of buffers for this pool
      * @throws IOException 
      */
-    public BufferPool(RandomAccessFile file, int numBuffers) throws IOException {
+    public BufferPool(RandomAccessFile file, int numBuffers) {
         this.numBuffers = numBuffers;
         this.file = file;
-        this.activeBuffers = 0;
         
         // Init buffer list
         this.buffers = new Buffer[numBuffers];
@@ -50,18 +46,6 @@ public class BufferPool {
         for (int i = 0; i < numBuffers; i++) {
             buffers[i] = new Buffer();
         }
-        
-        // TEMP
-//        buffers[0] = new Buffer(0);
-//        readFromFile(buffers[0]);
-//        
-//        // Make a change V -> A
-//        byte[] record = {32, 65, 32, 32};
-//        buffers[0].set(record, 0);
-//        buffers[0].makeDirty();  // TODO: Auto call this inside set??
-//        
-//        // Write back to file
-//        writeToFile(buffers[0]);
     }
     
     /**
@@ -73,12 +57,47 @@ public class BufferPool {
      *      The 4 byte long array where the record is returned
      * @param virtualAddress
      *      The virtualAddress to read from
+     * @throws IOException 
      */
-    public void readRecord(byte[] record, int virtualAddress) {
+    public void readRecord(byte[] record, int virtualAddress) throws IOException {
         // Determine where the virtualAddress maps to
         int[] mapped = mapVirtualAddress(virtualAddress);
         int blockID = mapped[0];
         int offset = mapped[1];
+        
+        // Check if buffer with that blockID is in pool
+        Buffer buf = findBuffer(blockID);
+        
+        if (buf == null) {
+            // Not in pool
+            // Do something about it
+            
+            // Is there space?
+//            if (full) {
+//                // NO, we are full
+//                // EVICT
+//                
+//                return;
+//            }
+            
+            // Not in pool, but YES we have space
+            
+            // Generate new buffer with that blockID
+//            Buffer newBuf = new Buffer(blockID);
+            
+            // Read from the file into the new buffer
+//            readFromFile(newBuf);
+            
+            // Place buffer at front of list
+            
+            // Read record into record array
+            
+            
+            
+            return;
+        }
+        
+        // The block was in the pool
     }
     
     /**
@@ -123,5 +142,35 @@ public class BufferPool {
         mapped[1] = virtualAddress % BLOCK_SIZE_BYTES;
         
         return mapped;
+    }
+    
+    /**
+     * If requested buffer is in pool, return it
+     * Else return null
+     * @param blockID
+     *      The ID to check for
+     * @return The requested buffer or null
+     */
+    public Buffer findBuffer(int blockID) {
+        for (int i = 0; i < numBuffers; i++) {
+            Buffer buf = buffers[i];
+            if (buf.getID() == blockID) {
+                return buf;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Place the buffer at the start of the list 
+     * @param buf
+     *      The new buffer to add
+     */
+    public void placeFront(Buffer buf) {
+        // Shift everything down
+        
+        // Place at buffers[0]
+        
+        // Increment active buffers
     }
 }  
