@@ -60,6 +60,7 @@ public class BufferPool {
      * @throws IOException 
      */
     public void readRecord(byte[] record, int virtualAddress) throws IOException {
+        // Virtual address should be a multiple of 4
         // Determine where the virtualAddress maps to
         int[] mapped = mapVirtualAddress(virtualAddress);
         int blockID = mapped[0];
@@ -73,31 +74,26 @@ public class BufferPool {
             // Do something about it
             
             // Is there space?
-//            if (full) {
-//                // NO, we are full
-//                // EVICT
-//                
-//                return;
-//            }
+            // TODO: if (full) -> EVICT
             
             // Not in pool, but YES we have space
             
             // Generate new buffer with that blockID
-//            Buffer newBuf = new Buffer(blockID);
+            Buffer newBuf = new Buffer(blockID);
             
             // Read from the file into the new buffer
-//            readFromFile(newBuf);
+            readFromFile(newBuf);
             
             // Place buffer at front of list
+            placeFront(newBuf);
             
             // Read record into record array
-            
-            
-            
+            newBuf.get(record, offset);
             return;
         }
         
         // The block was in the pool
+        buf.get(record, offset);
     }
     
     /**
@@ -165,12 +161,42 @@ public class BufferPool {
      * Place the buffer at the start of the list 
      * @param buf
      *      The new buffer to add
+     * @throws IOException 
      */
-    public void placeFront(Buffer buf) {
+    public void placeFront(Buffer buf) throws IOException {
+        // Remove LRU
+        removeLRU();
+        
         // Shift everything down
+        for (int i = 0; i < numBuffers - 1; i++) {
+            buffers[i+1] = buffers[i];
+        }
         
         // Place at buffers[0]
+        buffers[0] = buf;
+    }
+    
+    /**
+     * Removes the least recently used buffer
+     * Write to memory if LRU is dirty
+     * @return the LRU buffer
+     * @throws IOException
+     */
+    public Buffer removeLRU() throws IOException {
+        // Remove last item, write if dirty
+        int indexLRU = numBuffers - 1;
+        Buffer bufLRU = buffers[indexLRU];
         
-        // Increment active buffers
+        if (bufLRU.getID() < 0) {
+            // Empty
+            // Do nothing
+            return bufLRU;
+        }
+        
+        // It wasn't empty!
+        if (bufLRU.isDirty()) {
+            writeToFile(bufLRU);
+        }
+        return bufLRU;
     }
 }  

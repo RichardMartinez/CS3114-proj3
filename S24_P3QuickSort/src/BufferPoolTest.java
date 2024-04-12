@@ -10,6 +10,8 @@ import student.TestCase;
  * @version 2024-04-12
  */
 public class BufferPoolTest extends TestCase {
+    
+    public static final int RECORD_SIZE_BYTES = 4;
 
     private BufferPool pool;
     
@@ -18,6 +20,12 @@ public class BufferPoolTest extends TestCase {
      * @throws IOException 
      */
     public void setUp() throws IOException {
+        // Generate oneBlock.txt
+        FileGenerator fg;
+        fg = new FileGenerator("oneBlock.txt", 1);
+        fg.setSeed(33333333);
+        fg.generateFile(FileType.ASCII);
+        
         RandomAccessFile file = new RandomAccessFile("oneBlock.txt", "rw");
         pool = new BufferPool(file, 1);
     }
@@ -66,5 +74,26 @@ public class BufferPoolTest extends TestCase {
         offset = mapped[1];
         assertEquals(blockID, 1);
         assertEquals(offset, 1024);
+    }
+    
+    /**
+     * Test reading records
+     * @throws IOException 
+     */
+    public void testReadRecord() throws IOException {
+        byte[] space = new byte[4];
+        
+        pool.readRecord(space, 0);
+        assertEquals(space[1], 'Q');
+        
+        pool.readRecord(space, 1*RECORD_SIZE_BYTES);
+        assertEquals(space[1], 'W');
+        
+        pool.readRecord(space, 2*RECORD_SIZE_BYTES);
+        assertEquals(space[1], 'E');
+        
+        pool.readRecord(space, 3*RECORD_SIZE_BYTES);
+        assertEquals(space[1], 'S');
+        
     }
 }

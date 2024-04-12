@@ -61,6 +61,9 @@ public class Buffer {
         data[position+1] = record[1];
         data[position+2] = record[2];
         data[position+3] = record[3];
+        
+        // This is dirty now
+        makeDirty();
     }
     
     /**
