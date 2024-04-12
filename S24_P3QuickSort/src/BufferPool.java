@@ -52,16 +52,33 @@ public class BufferPool {
         }
         
         // TEMP
-        buffers[0] = new Buffer(0);
-        readFromFile(buffers[0]);
-        
-        // Make a change V -> A
-        byte[] record = {32, 65, 32, 32};
-        buffers[0].set(record, 0);
-        buffers[0].makeDirty();  // TODO: Auto call this inside set??
-        
-        // Write back to file
-        writeToFile(buffers[0]);
+//        buffers[0] = new Buffer(0);
+//        readFromFile(buffers[0]);
+//        
+//        // Make a change V -> A
+//        byte[] record = {32, 65, 32, 32};
+//        buffers[0].set(record, 0);
+//        buffers[0].makeDirty();  // TODO: Auto call this inside set??
+//        
+//        // Write back to file
+//        writeToFile(buffers[0]);
+    }
+    
+    /**
+     * Reads the record stored at virtualAddress.
+     * The buffer pool will determine which buffer it is in,
+     * then act accordingly.
+     * 
+     * @param record
+     *      The 4 byte long array where the record is returned
+     * @param virtualAddress
+     *      The virtualAddress to read from
+     */
+    public void readRecord(byte[] record, int virtualAddress) {
+        // Determine where the virtualAddress maps to
+        int[] mapped = mapVirtualAddress(virtualAddress);
+        int blockID = mapped[0];
+        int offset = mapped[1];
     }
     
     /**
@@ -90,5 +107,21 @@ public class BufferPool {
         
         // Write the file
         file.write(buf.getData());
+    }
+    
+    /**
+     * Maps a Virtual Address to a block ID and offset within that blocks
+     * @param virtualAddress
+     */
+    public int[] mapVirtualAddress(int virtualAddress) {
+        int[] mapped = new int[2];
+        
+        // Block ID
+        mapped[0] = virtualAddress / BLOCK_SIZE_BYTES;
+        
+        // Block Offset within that block
+        mapped[1] = virtualAddress % BLOCK_SIZE_BYTES;
+        
+        return mapped;
     }
 }  
