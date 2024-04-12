@@ -16,7 +16,7 @@ public class BufferPoolTest extends TestCase {
      */
     public void setUp() {
         // TODO: Change this once RAF is working
-        pool = new BufferPool(null, 5);
+        pool = new BufferPool(null, 1);
     }
     
     /**

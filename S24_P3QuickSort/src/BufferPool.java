@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.io.RandomAccessFile;
 
 /**
@@ -39,6 +40,7 @@ public class BufferPool {
     public BufferPool(RandomAccessFile file, int numBuffers) {
         this.numBuffers = numBuffers;
         this.file = file;
+        this.activeBuffers = 0;
         
         // Init buffer list
         this.buffers = new Buffer[numBuffers];
@@ -47,5 +49,19 @@ public class BufferPool {
         for (int i = 0; i < numBuffers; i++) {
             buffers[i] = new Buffer();
         }
+    }
+    
+    /**
+     * Read from the file and place the data inside buf
+     * @param buf
+     *      The buffer to read into
+     * @throws IOException 
+     */
+    public void readFromFile(Buffer buf) throws IOException {
+        // Point RAF to correct starting location
+        file.seek(buf.getID() * BLOCK_SIZE_BYTES);
+        
+        // Read into the buffer data
+        file.read(buf.getData());
     }
 }  
