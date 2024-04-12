@@ -94,6 +94,8 @@ public class BufferPoolTest extends TestCase {
         
         pool.readRecord(space, 3*RECORD_SIZE_BYTES);
         assertEquals(space[1], 'S');
-        
     }
+    
+    
+    
 }

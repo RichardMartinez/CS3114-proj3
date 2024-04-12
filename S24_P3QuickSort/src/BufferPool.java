@@ -97,6 +97,42 @@ public class BufferPool {
     }
     
     /**
+     * Writes the given record into virtual address.
+     * Buffer pool will act accordingly.
+     * 
+     * @param record
+     *      The record to write
+     * @param virtualAddress
+     *      The virtual address to write to
+     */
+    public void writeRecord(byte[] record, int virtualAddress) {
+        // Virtual address should be a multiple of 4
+        // Determine where the virtualAddress maps to
+        int[] mapped = mapVirtualAddress(virtualAddress);
+        int blockID = mapped[0];
+        int offset = mapped[1];
+        
+        // Check if buffer with that blockID is in pool
+        Buffer buf = findBuffer(blockID);
+        
+        if (buf == null) {
+            // Not in buffer pool
+            
+            // Is there space?
+            // TODO: if (full) -> EVICT
+            
+            // TODO: Read it from disk and do LRU shifting
+            // This shouldn't matter for 1 block only
+            // As the first thing is already a read which reads it
+            
+            return;
+        }
+        
+        // It was in the pool
+        buf.set(record, offset);
+    }
+    
+    /**
      * Read from the file and place the data inside buf
      * @param buf
      *      The buffer to read into
@@ -199,4 +235,19 @@ public class BufferPool {
         }
         return bufLRU;
     }
+    
+    /**
+     * Flush the buffer pool back to the disk
+     * @throws IOException 
+     */
+    public void flush() throws IOException {
+        for (int i = 0; i < numBuffers; i++) {
+            Buffer buf = buffers[i];
+            if (buf.isDirty()) {
+                writeToFile(buf);
+            }
+        }
+    }
+    
+    
 }  
