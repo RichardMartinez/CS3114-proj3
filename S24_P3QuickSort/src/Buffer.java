@@ -38,6 +38,15 @@ public class Buffer {
     }
     
     /**
+     * Default constructor
+     * 
+     * Sets ID to -1
+     */
+    public Buffer() {
+        this(-1);
+    }
+    
+    /**
      * Set the record array (must be size 4) to the specified
      * position in the data array
      * 

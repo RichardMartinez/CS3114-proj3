@@ -10,12 +10,14 @@ import student.TestCase;
 public class BufferTest extends TestCase {
 
     private Buffer buf;
+    private Buffer buf2;
     
     /**
      * Set up the test object
      */
     public void setUp() {
         buf = new Buffer(10);
+        buf2 = new Buffer();
     }
     
     /**
@@ -42,5 +44,8 @@ public class BufferTest extends TestCase {
         
         // Test isDirty
         assertTrue(buf.isDirty());
+        
+        // Test default constructor
+        assertEquals(buf2.getID(), -1);
     }
 }
