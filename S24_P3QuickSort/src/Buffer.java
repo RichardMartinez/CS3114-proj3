@@ -32,7 +32,7 @@ public class Buffer {
         this.id = id;
         
         // Fill data with zeros
-        for (int i = 0; i < data.length; i++) {
+        for (int i = 0; i < BLOCK_SIZE_BYTES; i++) {
             data[i] = 0;
         }
     }

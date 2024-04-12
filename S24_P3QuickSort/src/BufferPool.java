@@ -42,5 +42,10 @@ public class BufferPool {
         
         // Init buffer list
         this.buffers = new Buffer[numBuffers];
+        
+        // Init all with default constructor
+        for (int i = 0; i < numBuffers; i++) {
+            buffers[i] = new Buffer();
+        }
     }
 }  
