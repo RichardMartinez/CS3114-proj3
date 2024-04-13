@@ -2,6 +2,9 @@
  * TODO: {Project Description Here}
  */
 
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
 /**
  * The class containing the main method.
  *
@@ -34,8 +37,9 @@ public class Quicksort {
     /**
      * @param args
      *            Command line parameters. See the project spec!!!
+     * @throws IOException 
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // This is the main file for the program.
         System.out.println("This is working QuickSort!");
         System.out.println("Implement project here");
@@ -51,6 +55,15 @@ public class Quicksort {
         String statFileName = args[2];
         
         // TODO: Run QuickSort on dataFileName
+        
+        RandomAccessFile file = new RandomAccessFile(dataFileName, "rw");
+        BufferPool pool = new BufferPool(file, numBuffers);
+        Sorter sorter = new Sorter(pool);
+        
+        int numRecords = (int) (file.length() / 4);
+        sorter.sort(0, numRecords-1);
+        pool.flush();
+        
     }
     
     
