@@ -10,8 +10,6 @@ import java.io.RandomAccessFile;
  * @version 2024-04-12
  */
 public class BufferPool {
-//    ByteBuffer.wrap(array).getShort()
-    
     // 1 buffer = 4096 bytes = 1024 records
     public static final int BLOCK_SIZE_BYTES = 4096;
     public static final int RECORD_SIZE_BYTES = 4;
@@ -76,7 +74,11 @@ public class BufferPool {
             // Do something about it
             
             // Is there space?
-            // TODO: if (full) -> EVICT
+            if (isFull()) {
+                // Need to evict to make space, then
+                // let below code cover it
+                removeLRU();
+            }
             
             // Not in pool, but YES we have space
             
@@ -96,6 +98,7 @@ public class BufferPool {
         
         // The block was in the pool
         buf.get(record, offset);
+        moveToFront(blockID);
     }
     
     /**
@@ -106,8 +109,9 @@ public class BufferPool {
      *      The record to write
      * @param virtualIndex
      *      The virtual index to write to
+     * @throws IOException 
      */
-    public void writeRecord(byte[] record, int virtualIndex) {
+    public void writeRecord(byte[] record, int virtualIndex) throws IOException {
         // Virtual address should be a multiple of 4
         // Determine where the virtualAddress maps to
         int virtualAddress = virtualIndex * RECORD_SIZE_BYTES;
@@ -122,17 +126,28 @@ public class BufferPool {
             // Not in buffer pool
             
             // Is there space?
-            // TODO: if (full) -> EVICT
+            if (isFull()) {
+                // Need to evict to make space, then
+                // let below code cover it
+                removeLRU();
+            }
             
-            // TODO: Read it from disk and do LRU shifting
-            // This shouldn't matter for 1 block only
-            // As the first thing is already a read which reads it
+            // Generate new buffer with that blockID
+            Buffer newBuf = new Buffer(blockID);
             
+            // Read from the file into the new buffer
+            readFromFile(newBuf);
+            
+            // Place buffer at front of list
+            placeFront(newBuf);
+            
+            newBuf.set(record, offset); 
             return;
         }
         
         // It was in the pool
         buf.set(record, offset);
+        moveToFront(blockID);
     }
     
     /**
@@ -204,10 +219,11 @@ public class BufferPool {
      */
     public void placeFront(Buffer buf) throws IOException {
         // Remove LRU
-        removeLRU();
+        // No need, assume there is space at this point
+        // removeLRU();
         
         // Shift everything down
-        for (int i = 0; i < numBuffers - 1; i++) {
+        for (int i = numBuffers - 2; i >= 0; i--) {
             buffers[i+1] = buffers[i];
         }
         
@@ -250,6 +266,58 @@ public class BufferPool {
                 writeToFile(buf);
             }
         }
+    }
+    
+    /**
+     * Returns true if full
+     * @return true if full
+     */
+    public boolean isFull() {
+        // Only full is last buffer is has id >= 0
+        int lastBufIndex = numBuffers - 1;
+        Buffer lastBuf = buffers[lastBufIndex];
+        
+        return lastBuf.getID() >= 0;
+    }
+    
+    /**
+     * Move the buffer with the specified blockID to the
+     * top if it exists in the pool
+     * @param blockID
+     */
+    public void moveToFront(int blockID) {
+        // Find if buffer exists, get its index for shifting
+        Buffer buf = null;
+        int index;
+        for (index = 0; index < numBuffers; index++) {
+            if (buffers[index].getID() == blockID) {
+                buf = buffers[index];
+                break;
+            }
+        }
+        
+        if (buf == null) {
+            // Not in the pool
+            return;
+        }
+        
+        // At this point, we have the index and the buffer
+        
+        // Shift down everything above it
+//        for (int i = numBuffers - 2; i >= 0; i--) {
+//            buffers[i+1] = buffers[i];
+//        }
+        // This is wrong, try again
+        
+        // Shift down everything above it
+        for (int i = index - 1; i >= 0; i--) {
+            buffers[i+1] = buffers[i];
+        }
+        
+        
+        
+        // Place the found buffer at index 0
+        buffers[0] = buf;
     }
     
     

@@ -55,6 +55,7 @@ public class Quicksort {
         String statFileName = args[2];
         
         // TODO: Run QuickSort on dataFileName
+        // TODO: Keep track of stats file
         
         RandomAccessFile file = new RandomAccessFile(dataFileName, "rw");
         BufferPool pool = new BufferPool(file, numBuffers);

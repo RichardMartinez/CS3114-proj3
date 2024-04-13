@@ -31,6 +31,8 @@ public class Sorter {
      * @throws IOException 
      */
     public void sort(int i, int j) throws IOException {
+        // TODO: Maybe optimize with insertion sort here
+        
         // Find the pivot
         int indexPivot = findpivot(i, j);
 
@@ -53,6 +55,10 @@ public class Sorter {
         if (j-k > 1) {
             sort(k+1, j);
         }
+    }
+    
+    public void insertionSort(int i, int j) {
+        
     }
     
     /**

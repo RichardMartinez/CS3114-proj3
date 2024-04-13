@@ -29,8 +29,8 @@ public class FileGenerator {
     static public final int BYTES_PER_BLOCK = RECORDS_PER_BLOCK
         * BYTES_PER_RECORD;
 
-    public final int numBlocks;
-    public final String fname;
+    private final int numBlocks;
+    private final String fname;
     private Random rng;
 
     /**

@@ -95,5 +95,26 @@ public class QuicksortTest extends TestCase {
         // TODO: In a real test, the following should work:
         assertTrue(CheckFile.check(fname));
     }
+    
+    /**
+     * Test sorting 10 blocks with QuickSort
+     * @throws Exception
+     */
+    public void testSortingTenBlocks() throws Exception {
+        String fname = "tenBlocksQS.bin";
+        int blocks = 10;
+        FileGenerator fg = new FileGenerator(fname, blocks);
+        fg.generateFile(FileType.BINARY);
+        
+        assertFalse(CheckFile.check(fname));
+        
+        String[] args = new String[3];
+        args[0] = fname;
+        args[1] = "10";
+        args[2] = "stats.txt";
+        Quicksort.main(args);
+        
+        assertTrue(CheckFile.check(fname));
+    }
 
 }
