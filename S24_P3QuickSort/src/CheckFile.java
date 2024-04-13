@@ -5,6 +5,8 @@ import java.io.*;
  * is a pair of short ints with the first short being the key value
  *
  * @author CS3114 Instructors and TAs
+ * 
+ * @version 2024-04-12
  */
 
 public class CheckFile {

@@ -1,8 +1,23 @@
 import java.io.*;
 import java.util.*;
 
+/**
+ * An enum to represent what type of file to generate
+ * 
+ * @author Richard Martinez
+ * 
+ * @version 2024-04-12
+ */
 enum FileType {
-    BINARY, ASCII
+    /**
+     * Binary file type
+     */
+    BINARY,
+
+    /**
+     * ASCII file type
+     */
+    ASCII
 };
 
 
@@ -20,12 +35,33 @@ enum FileType {
  * and often looks like textual garbage.
  * 
  * @author Cliff Shaffer, Patrick Sullivan
+ * 
+ * @version 2024-04-12
  */
 public class FileGenerator {
+    /**
+     * Number of bytes in a key
+     */
     static public final int BYTES_IN_KEY = Short.BYTES;
+
+    /**
+     * Number of bytes in a value
+     */
     static public final int BYTES_IN_VALUE = Short.BYTES;
+
+    /**
+     * Number of bytes per record
+     */
     static public final int BYTES_PER_RECORD = BYTES_IN_KEY + BYTES_IN_VALUE;
+
+    /**
+     * Number of records per block
+     */
     static public final int RECORDS_PER_BLOCK = 1024;
+
+    /**
+     * Number of bytes per block
+     */
     static public final int BYTES_PER_BLOCK = RECORDS_PER_BLOCK
         * BYTES_PER_RECORD;
 
@@ -118,7 +154,7 @@ public class FileGenerator {
             for (int j = 0; j < RECORDS_PER_BLOCK; j++) {
                 randKey = Math.abs(rng.nextInt() % range) + asciiOffset;
                 dos.writeShort(randKey); // THIS writes to the file!
-                dos.writeShort(blankVal);// THIS writes to the file!
+                dos.writeShort(blankVal); // THIS writes to the file!
             }
         }
     }
@@ -134,7 +170,8 @@ public class FileGenerator {
      *             if writing shorts encounters an issue
      */
     private void generateBinaryFile(DataOutputStream dos) throws IOException {
-        int randKey, randVal;
+        int randKey;
+        int randVal;
         int minRand = 1; // minimum random short
         int range = 30000 - minRand; // max random short - min random short
         for (int i = 0; i < numBlocks; i++) {

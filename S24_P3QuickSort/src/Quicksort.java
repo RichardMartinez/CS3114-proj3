@@ -1,5 +1,21 @@
+
 /**
- * TODO: {Project Description Here}
+ * Project 3 Virtual QuickSort
+ * 
+ * Compiled using JRE 11 for CS 3114
+ * Operating System: Windows 11
+ * IDE: Eclipse
+ * Date Completed: 04-13-2024
+ * Created By: Richard Martinez
+ * 
+ * In this project, I implemented a QuickSort algorithm
+ * that has been modified to use Virtual Memory.
+ * This means that from the point of view of the sorter,
+ * there is infinite memory. In reality, all requests from
+ * the virtual memory are mapped and maintained using a
+ * caching data structure called a BufferPool. Using the
+ * least recently used technique, the BufferPool is able
+ * to provide the illusion of memory to the QuickSort.
  */
 
 import java.io.IOException;
@@ -37,35 +53,34 @@ public class Quicksort {
     /**
      * @param args
      *            Command line parameters. See the project spec!!!
-     * @throws IOException 
+     * @throws IOException
      */
     public static void main(String[] args) throws IOException {
         // This is the main file for the program.
         System.out.println("This is working QuickSort!");
         System.out.println("Implement project here");
-        
+
         if (args.length != 3) {
             System.out.println("Invalid number of args");
             return;
         }
-        
+
         // Parse Input Args
         String dataFileName = args[0];
         int numBuffers = Integer.parseInt(args[1]);
         String statFileName = args[2];
-        
+
         // TODO: Run QuickSort on dataFileName
         // TODO: Keep track of stats file
-        
+
         RandomAccessFile file = new RandomAccessFile(dataFileName, "rw");
         BufferPool pool = new BufferPool(file, numBuffers);
         Sorter sorter = new Sorter(pool);
-        
-        int numRecords = (int) (file.length() / 4);
-        sorter.sort(0, numRecords-1);
+
+        int numRecords = (int)(file.length() / 4);
+        sorter.sort(0, numRecords - 1);
         pool.flush();
-        
+
     }
-    
-    
+
 }

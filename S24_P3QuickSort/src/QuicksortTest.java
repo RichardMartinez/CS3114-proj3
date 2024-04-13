@@ -16,6 +16,11 @@ public class QuicksortTest extends TestCase {
     }
 
 
+    /**
+     * Test the file generator
+     * 
+     * @throws IOException
+     */
     public void testFileGen() throws IOException {
         String fname = "threeBlock.txt";
         int blocks = 3;
@@ -30,7 +35,7 @@ public class QuicksortTest extends TestCase {
         assertEquals(calcedBytes, fileNumBytes); // size is correct!
 
         RandomAccessFile raf = new RandomAccessFile(f, "r");
-        short firstKey = raf.readShort();// reads two bytes
+        short firstKey = raf.readShort(); // reads two bytes
         assertEquals(8273, firstKey); // first key looks like ' Q', translates
                                       // to 8273
 
@@ -43,6 +48,11 @@ public class QuicksortTest extends TestCase {
     }
 
 
+    /**
+     * Test the file checker
+     * 
+     * @throws Exception
+     */
     public void testCheckFile() throws Exception {
         assertTrue(CheckFile.check("tinySorted.txt"));
 
@@ -58,13 +68,13 @@ public class QuicksortTest extends TestCase {
         // hmmm... maybe do some sorting on that file ...
         // then we can do:
         // assertTrue(CheckFile.check(fname));
-        
+
         String[] args = new String[3];
         args[0] = fname;
         args[1] = "1";
         args[2] = "stats.txt";
         Quicksort.main(args);
-        
+
         assertTrue(CheckFile.check(fname));
     }
 
@@ -95,9 +105,11 @@ public class QuicksortTest extends TestCase {
         // TODO: In a real test, the following should work:
         assertTrue(CheckFile.check(fname));
     }
-    
+
+
     /**
      * Test sorting 10 blocks with QuickSort
+     * 
      * @throws Exception
      */
     public void testSortingTenBlocks() throws Exception {
@@ -105,15 +117,15 @@ public class QuicksortTest extends TestCase {
         int blocks = 10;
         FileGenerator fg = new FileGenerator(fname, blocks);
         fg.generateFile(FileType.BINARY);
-        
+
         assertFalse(CheckFile.check(fname));
-        
+
         String[] args = new String[3];
         args[0] = fname;
         args[1] = "10";
         args[2] = "stats.txt";
         Quicksort.main(args);
-        
+
         assertTrue(CheckFile.check(fname));
     }
 
