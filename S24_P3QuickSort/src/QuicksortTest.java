@@ -129,4 +129,27 @@ public class QuicksortTest extends TestCase {
         assertTrue(CheckFile.check(fname));
     }
 
+
+    /**
+     * Test sorting 5 blocks with QuickSort
+     * 
+     * @throws Exception
+     */
+    public void testSortingFiveBlocksTwoBuffers() throws Exception {
+        String fname = "fiveBlocksQS.bin";
+        int blocks = 5;
+        FileGenerator fg = new FileGenerator(fname, blocks);
+        fg.generateFile(FileType.BINARY);
+
+        assertFalse(CheckFile.check(fname));
+
+        String[] args = new String[3];
+        args[0] = fname;
+        args[1] = "2";
+        args[2] = "stats.txt";
+        Quicksort.main(args);
+
+        assertTrue(CheckFile.check(fname));
+    }
+
 }

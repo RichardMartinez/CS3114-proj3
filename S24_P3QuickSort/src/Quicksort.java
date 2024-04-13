@@ -18,6 +18,7 @@
  * to provide the illusion of memory to the QuickSort.
  */
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -57,29 +58,59 @@ public class Quicksort {
      */
     public static void main(String[] args) throws IOException {
         // This is the main file for the program.
-        System.out.println("This is working QuickSort!");
-        System.out.println("Implement project here");
+// System.out.println("This is working QuickSort!");
+// System.out.println("Implement project here");
 
-        if (args.length != 3) {
-            System.out.println("Invalid number of args");
-            return;
-        }
+// if (args.length != 3) {
+// System.out.println("Invalid number of args");
+// return;
+// }
 
         // Parse Input Args
         String dataFileName = args[0];
         int numBuffers = Integer.parseInt(args[1]);
         String statFileName = args[2];
 
-        // TODO: Run QuickSort on dataFileName
-        // TODO: Keep track of stats file
-
         RandomAccessFile file = new RandomAccessFile(dataFileName, "rw");
         BufferPool pool = new BufferPool(file, numBuffers);
         Sorter sorter = new Sorter(pool);
 
         int numRecords = (int)(file.length() / 4);
+
+        long start = System.currentTimeMillis();
         sorter.sort(0, numRecords - 1);
         pool.flush();
+        long finish = System.currentTimeMillis();
+
+        // Write the stats to a file
+        // dataFileName
+        // cacheHits
+        // diskReads
+        // diskWrites
+        // amount of time
+        long runTimeMS = finish - start;
+        int cacheHits = pool.getCacheHits();
+        int diskReads = pool.getDiskReads();
+        int diskWrites = pool.getDiskWrites();
+
+        int numBlocks = numRecords / 1024;
+
+        // Write stats to file
+        try {
+            FileWriter statsFile = new FileWriter(statFileName, true);
+
+            String output = "Filename: " + dataFileName + "\n" + "Num Blocks: "
+                + numBlocks + "\n" + "Num Buffers: " + numBuffers + "\n"
+                + "Cache Hits: " + cacheHits + "\n" + "Disk Reads: " + diskReads
+                + "\n" + "Disk Writes: " + diskWrites + "\n" + "Run Time: "
+                + runTimeMS + " ms \n\n";
+
+            statsFile.write(output);
+            statsFile.close();
+        }
+        catch (Exception e) {
+            System.out.println("Error writing stats to file");
+        }
 
     }
 

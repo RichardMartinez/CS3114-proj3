@@ -30,7 +30,12 @@ public class BufferPool {
     // RandomAccessFile to read and write
     private RandomAccessFile file;
 
-    // TODO: Hold stats variables here
+    // Stats variables
+    private int cacheHits;
+
+    private int diskReads;
+
+    private int diskWrites;
 
     /**
      * Constructor for BufferPool
@@ -52,6 +57,10 @@ public class BufferPool {
         for (int i = 0; i < numBuffers; i++) {
             buffers[i] = new Buffer();
         }
+
+        this.cacheHits = 0;
+        this.diskReads = 0;
+        this.diskWrites = 0;
     }
 
 
@@ -107,6 +116,7 @@ public class BufferPool {
         // The block was in the pool
         buf.get(record, offset);
         moveToFront(blockID);
+        cacheHits++;
     }
 
 
@@ -158,6 +168,7 @@ public class BufferPool {
         // It was in the pool
         buf.set(record, offset);
         moveToFront(blockID);
+        cacheHits++;
     }
 
 
@@ -174,6 +185,8 @@ public class BufferPool {
 
         // Read into the buffer data
         file.read(buf.getData());
+
+        diskReads++;
     }
 
 
@@ -190,6 +203,8 @@ public class BufferPool {
 
         // Write the file
         file.write(buf.getData());
+
+        diskWrites++;
     }
 
 
@@ -335,18 +350,42 @@ public class BufferPool {
         // At this point, we have the index and the buffer
 
         // Shift down everything above it
-// for (int i = numBuffers - 2; i >= 0; i--) {
-// buffers[i+1] = buffers[i];
-// }
-// This is wrong, try again
-
-        // Shift down everything above it
         for (int i = index - 1; i >= 0; i--) {
             buffers[i + 1] = buffers[i];
         }
 
         // Place the found buffer at index 0
         buffers[0] = buf;
+    }
+
+
+    /**
+     * Get the number of cache hits
+     * 
+     * @return the number of hits
+     */
+    public int getCacheHits() {
+        return cacheHits;
+    }
+
+
+    /**
+     * Get the number of disk reads
+     * 
+     * @return the number of disk reads
+     */
+    public int getDiskReads() {
+        return diskReads;
+    }
+
+
+    /**
+     * Get the number of disk writes
+     * 
+     * @return the number of disk writes
+     */
+    public int getDiskWrites() {
+        return diskWrites;
     }
 
 }

@@ -100,8 +100,9 @@ public class Sorter {
      *            The right index
      * @return
      *         The pivot index
+     * @throws IOException
      */
-    public int findpivot(int i, int j) {
+    public int findpivot(int i, int j) throws IOException {
         return (i + j) / 2;
     }
 

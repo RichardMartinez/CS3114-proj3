@@ -32,15 +32,6 @@ public class SorterTest extends TestCase {
         sorter = new Sorter(pool);
     }
 
-// /**
-// * Test the swap method
-// * @throws IOException
-// */
-// public void testSwap() throws IOException {
-// sorter.swap(0, 2);
-// pool.flush();
-// }
-
 
     /**
      * Test the sort method
@@ -137,9 +128,6 @@ public class SorterTest extends TestCase {
 //
 // assertTrue(CheckFile.check(fname));
 // }
-
-    // TODO: Test More blocks then buffers, but 1000 is too much
-    // Maybe 5 or 4 blocks, 2 buffers
 
     /**
      * Test higher blocks than buffers

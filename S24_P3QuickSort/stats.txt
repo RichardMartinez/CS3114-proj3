@@ -1,0 +1,32 @@
+Filename: checkme.txt
+Num Blocks: 1
+Num Buffers: 1
+Cache Hits: 40031
+Disk Reads: 1
+Disk Writes: 1
+Run Time: 8 ms 
+
+Filename: input.bin
+Num Blocks: 1
+Num Buffers: 1
+Cache Hits: 28984
+Disk Reads: 1
+Disk Writes: 1
+Run Time: 3 ms 
+
+Filename: tenBlocksQS.bin
+Num Blocks: 10
+Num Buffers: 10
+Cache Hits: 385276
+Disk Reads: 10
+Disk Writes: 10
+Run Time: 27 ms 
+
+Filename: fiveBlocksQS.bin
+Num Blocks: 5
+Num Buffers: 2
+Cache Hits: 183875
+Disk Reads: 56
+Disk Writes: 56
+Run Time: 7 ms 
+

@@ -34,13 +34,6 @@ public class BufferPoolTest extends TestCase {
         pool = new BufferPool(file, 1);
     }
 
-// /**
-// * Test the BufferPool
-// */
-// public void testBufferPool() {
-// int x = 1;
-// }
-
 
     /**
      * Test the mapping method
