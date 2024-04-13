@@ -22,20 +22,20 @@ public class BufferPoolTest extends TestCase {
     public void setUp() throws IOException {
         // Generate oneBlock.txt
         FileGenerator fg;
-        fg = new FileGenerator("oneBlock.txt", 1);
+        fg = new FileGenerator("oneBlock2.txt", 1);
         fg.setSeed(33333333);
         fg.generateFile(FileType.ASCII);
         
-        RandomAccessFile file = new RandomAccessFile("oneBlock.txt", "rw");
+        RandomAccessFile file = new RandomAccessFile("oneBlock2.txt", "rw");
         pool = new BufferPool(file, 1);
     }
     
-    /**
-     * Test the BufferPool
-     */
-    public void testBufferPool() {
-        int x = 1;
-    }
+//    /**
+//     * Test the BufferPool
+//     */
+//    public void testBufferPool() {
+//        int x = 1;
+//    }
     
     /**
      * Test the mapping method
@@ -86,13 +86,13 @@ public class BufferPoolTest extends TestCase {
         pool.readRecord(space, 0);
         assertEquals(space[1], 'Q');
         
-        pool.readRecord(space, 1*RECORD_SIZE_BYTES);
+        pool.readRecord(space, 1);
         assertEquals(space[1], 'W');
         
-        pool.readRecord(space, 2*RECORD_SIZE_BYTES);
+        pool.readRecord(space, 2);
         assertEquals(space[1], 'E');
         
-        pool.readRecord(space, 3*RECORD_SIZE_BYTES);
+        pool.readRecord(space, 3);
         assertEquals(space[1], 'S');
     }
     

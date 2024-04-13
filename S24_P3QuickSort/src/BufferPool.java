@@ -14,6 +14,7 @@ public class BufferPool {
     
     // 1 buffer = 4096 bytes = 1024 records
     public static final int BLOCK_SIZE_BYTES = 4096;
+    public static final int RECORD_SIZE_BYTES = 4;
     
     // List of buffers
     private Buffer[] buffers;
@@ -55,13 +56,14 @@ public class BufferPool {
      * 
      * @param record
      *      The 4 byte long array where the record is returned
-     * @param virtualAddress
-     *      The virtualAddress to read from
+     * @param virtualIndex
+     *      The virtual index to read from
      * @throws IOException 
      */
-    public void readRecord(byte[] record, int virtualAddress) throws IOException {
+    public void readRecord(byte[] record, int virtualIndex) throws IOException {
         // Virtual address should be a multiple of 4
         // Determine where the virtualAddress maps to
+        int virtualAddress = virtualIndex * RECORD_SIZE_BYTES;
         int[] mapped = mapVirtualAddress(virtualAddress);
         int blockID = mapped[0];
         int offset = mapped[1];
@@ -102,12 +104,13 @@ public class BufferPool {
      * 
      * @param record
      *      The record to write
-     * @param virtualAddress
-     *      The virtual address to write to
+     * @param virtualIndex
+     *      The virtual index to write to
      */
-    public void writeRecord(byte[] record, int virtualAddress) {
+    public void writeRecord(byte[] record, int virtualIndex) {
         // Virtual address should be a multiple of 4
         // Determine where the virtualAddress maps to
+        int virtualAddress = virtualIndex * RECORD_SIZE_BYTES;
         int[] mapped = mapVirtualAddress(virtualAddress);
         int blockID = mapped[0];
         int offset = mapped[1];

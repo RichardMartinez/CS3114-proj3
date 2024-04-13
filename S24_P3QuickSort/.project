@@ -20,5 +20,10 @@
 			<type>1</type>
 			<location>C:/Users/richa/source/repos/CS3114/Project 3/S24_P3QuickSort/oneBlock.txt</location>
 		</link>
+		<link>
+			<name>oneBlock2.txt</name>
+			<type>1</type>
+			<location>C:/Users/richa/source/repos/CS3114/Project 3/S24_P3QuickSort/oneBlock2.txt</location>
+		</link>
 	</linkedResources>
 </projectDescription>

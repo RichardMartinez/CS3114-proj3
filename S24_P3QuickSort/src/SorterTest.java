@@ -1,5 +1,4 @@
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import student.TestCase;
 
@@ -31,12 +30,24 @@ public class SorterTest extends TestCase {
         sorter = new Sorter(pool);
     }
     
+//    /**
+//     * Test the swap method
+//     * @throws IOException 
+//     */
+//    public void testSwap() throws IOException {
+//        sorter.swap(0, 2);
+//        pool.flush();
+//    }
+    
     /**
-     * Test the swap method
-     * @throws IOException 
+     * Test the sort method
+     * @throws Exception 
      */
-    public void testSwap() throws IOException {
-        sorter.swap(0, 2);
+    public void testSort() throws Exception {
+        int numRecords = 1024;
+        sorter.sort(0, numRecords - 1);
         pool.flush();
+        
+        assertTrue(CheckFile.check("oneBlock.txt"));
     }
 }

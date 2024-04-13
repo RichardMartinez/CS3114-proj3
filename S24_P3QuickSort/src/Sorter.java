@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * This class represents a sorter that can run
@@ -9,8 +10,6 @@ import java.io.IOException;
  * @version 2024-04-12
  */
 public class Sorter {
-    
-    public static final int RECORD_SIZE_BYTES = 4;
     
     // The buffer pool to use
     private BufferPool pool;
@@ -34,21 +33,26 @@ public class Sorter {
     public void sort(int i, int j) throws IOException {
         // Find the pivot
         int indexPivot = findpivot(i, j);
-        int indexEnd = j * RECORD_SIZE_BYTES;
-        
-        // Read pivot and end
-        byte[] pivotRecord = new byte[RECORD_SIZE_BYTES];
-        pool.readRecord(pivotRecord, indexPivot);
-        
-        byte[] endRecord = new byte[RECORD_SIZE_BYTES];
-        pool.readRecord(endRecord, indexEnd);
-        
+
         // Swap them
-        swap(indexPivot, indexEnd);
+        swap(indexPivot, j);
         
-        // TODO: Partition
+        // Now, pivot record is at position j or indexEnd
         
-        // At the end, flush the buffer pool?
+        // Partition
+        int k = partition(i, j);
+        
+        // Put the pivot back in its place
+        swap(k, j);
+        
+        // Call sort recursively on left and right sub lists
+        if (k-i > 1) {
+            // Sort left sub list
+            sort(i, k-1);
+        }
+        if (j-k > 1) {
+            sort(k+1, j);
+        }
     }
     
     /**
@@ -73,19 +77,75 @@ public class Sorter {
      * @throws IOException
      */
     public void swap(int virtualIndex1, int virtualIndex2) throws IOException {
-        byte[] record1 = new byte[RECORD_SIZE_BYTES];
-        byte[] record2 = new byte[RECORD_SIZE_BYTES];
-        
-        int virtualAddress1 = virtualIndex1 * RECORD_SIZE_BYTES;
-        int virtualAddress2 = virtualIndex2 * RECORD_SIZE_BYTES;
+        byte[] record1 = new byte[4];
+        byte[] record2 = new byte[4];
         
         // Read both records
-        pool.readRecord(record1, virtualAddress1);
-        pool.readRecord(record2, virtualAddress2);
+        pool.readRecord(record1, virtualIndex1);
+        pool.readRecord(record2, virtualIndex2);
         
         // Write them to opposite addresses
-        pool.writeRecord(record1, virtualAddress2);
-        pool.writeRecord(record2, virtualAddress1);
+        pool.writeRecord(record1, virtualIndex2);
+        pool.writeRecord(record2, virtualIndex1);
+    }
+    
+    /**
+     * Partition the array
+     * @param left
+     *      The left index
+     * @param right
+     *      The right index
+     * @return the position of the right sub array
+     * @throws IOException 
+     */
+    public int partition(int left, int right) throws IOException {
+        // Pivot is at position right, grab it
+        short pivotKey = getKey(right);
+        
+        // Then decrement right
+        right--;
+        
+        // Then do partition using comparisons to pivot
+        while (left <= right) {  // Move inwards until they meet
+            // Keep increasing left until you find something larger
+            short leftKey = getKey(left);
+            while (leftKey < pivotKey) {
+                left++;
+                leftKey = getKey(left);
+            }
+            
+            // Keep decreasing right until you find something smaller
+            short rightKey = getKey(right);
+            while ((right >= left) && (rightKey >= pivotKey)) {
+                right--;
+                if (right < 0) {
+                    break;
+                }
+
+                rightKey = getKey(right);
+            }
+            
+            // if (right > left) -> swap
+            if (right > left) {
+                swap(left, right);
+            }
+        }
+        
+        // Return the position of the right sub array
+        return left;
+    }
+    
+    /**
+     * Return the key of the virtual index as a short for comparison
+     * @param virtualIndex
+     *  
+     * @return a short representing the key
+     * @throws IOException
+     */
+    public short getKey(int virtualIndex) throws IOException {
+        byte[] record = new byte[4];
+        pool.readRecord(record, virtualIndex);
+        return ByteBuffer.wrap(record).getShort();
     }
     
     
